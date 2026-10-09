@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Claude AI Chat</title>
+<title>MyCode AI</title>
 
 <style>
 
@@ -16,469 +16,435 @@
 }
 
 :root {
-    --bg: #f7f5f0;
-    --sidebar: #eeeae3;
-    --primary: #c56b4d;
-    --primary-hover: #ad583d;
-    --text: #282622;
-    --muted: #89847c;
-    --border: #e5e0d8;
-    --white: #ffffff;
+    --bg: #090d18;
+    --panel: #111827;
+    --panel2: #192335;
+    --border: #293449;
+    --text: #edf2fa;
+    --muted: #94a3b8;
+    --accent: #7357ff;
+    --green: #22c55e;
 }
 
 body {
-    font-family: Tahoma, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
+    font-family: Tahoma, Arial, sans-serif;
     height: 100dvh;
     overflow: hidden;
 }
 
-/* MAIN LAYOUT */
+button, textarea, select {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
 
 .app {
-    display: flex;
-    width: 100%;
     height: 100dvh;
-}
-
-/* SIDEBAR */
-
-.sidebar {
-    width: 260px;
-    background: var(--sidebar);
-    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 20px 14px;
-    flex-shrink: 0;
-}
-
-.logo {
-    font-size: 26px;
-    font-weight: bold;
-    color: var(--primary);
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.new-chat {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #d8d2c9;
-    background: white;
-    color: var(--text);
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: right;
-    transition: 0.2s;
-}
-
-.new-chat:hover {
-    background: #faf7f2;
-}
-
-.sidebar-title {
-    margin-top: 30px;
-    font-size: 12px;
-    color: var(--muted);
-    padding: 10px;
-}
-
-.history-item {
-    padding: 13px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.5);
-    font-size: 13px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    padding-top: 15px;
-}
-
-/* MAIN */
-
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    height: 100%;
 }
 
 /* HEADER */
 
-.header {
-    height: 68px;
+header {
+    padding: 14px 20px;
+    background: var(--panel);
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    background: rgba(255,255,255,0.55);
-    gap: 15px;
+    align-items: center;
+    gap: 12px;
 }
 
-.header-title {
-    font-size: 19px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg,#7357ff,#3b82f6);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
-    white-space: nowrap;
+    font-size: 21px;
+    direction: ltr;
 }
 
-.model-select {
+.brand h2 {
+    font-size: 18px;
+}
+
+.brand p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.status {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.online {
+    color: var(--green);
+}
+
+/* MODEL BAR */
+
+.model-bar {
+    background: #0e1626;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+select {
+    background: var(--panel2);
+    color: white;
     border: 1px solid var(--border);
-    border-radius: 10px;
-    background: white;
-    color: var(--text);
-    padding: 10px;
-    max-width: 220px;
-    font-size: 13px;
-    outline: none;
+    padding: 11px;
+    border-radius: 9px;
+    flex: 1;
+    min-width: 180px;
+}
+
+.btn {
+    padding: 11px 15px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel2);
+    color: white;
+    font-size: 12px;
+}
+
+.btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.progress {
+    height: 4px;
+    background: #253047;
+}
+
+.progress-fill {
+    background: var(--accent);
+    width: 0%;
+    height: 100%;
+    transition: width .2s;
+}
+
+/* WORKSPACE */
+
+.workspace {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 42% 58%;
 }
 
 /* CHAT */
 
-.chat-container {
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-left: 1px solid var(--border);
+}
+
+.panel-header {
+    padding: 14px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.panel-header h3 {
+    font-size: 14px;
+}
+
+.messages {
     flex: 1;
     overflow-y: auto;
-    padding: 28px 20px;
-    scroll-behavior: smooth;
+    padding: 16px;
 }
-
-.chat-content {
-    max-width: 850px;
-    margin: auto;
-    min-height: 100%;
-}
-
-/* WELCOME */
 
 .welcome {
     text-align: center;
-    padding-top: min(15vh, 110px);
+    padding: 35px 10px;
 }
 
-.claude-icon {
-    width: 72px;
-    height: 72px;
-    background: var(--primary);
-    color: white;
+.welcome-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg,#7357ff,#2563eb);
     border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 25px;
-    font-size: 40px;
+    display: grid;
+    place-items: center;
+    margin: auto;
+    font-size: 30px;
 }
 
-.welcome h1 {
-    font-size: 29px;
-    margin-bottom: 14px;
-    font-weight: bold;
+.welcome h2 {
+    margin-top: 20px;
+    font-size: 21px;
 }
 
 .welcome p {
     color: var(--muted);
-    font-size: 15px;
     line-height: 2;
+    margin-top: 13px;
+    font-size: 13px;
 }
 
 .suggestions {
+    margin-top: 25px;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    max-width: 600px;
-    margin: 35px auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
 }
 
-.suggestion {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 16px;
-    border-radius: 13px;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: right;
-    transition: 0.2s;
-}
-
-.suggestion:hover {
-    border-color: var(--primary);
-    background: #fffaf6;
-}
-
-/* MESSAGES */
-
-.message-row {
-    display: flex;
-    margin-bottom: 25px;
-    width: 100%;
-}
-
-.message-row.user {
-    justify-content: flex-start;
-}
-
-.message-row.assistant {
-    justify-content: flex-start;
-}
-
-.message {
-    max-width: 85%;
-    line-height: 2;
-    font-size: 14px;
-    word-break: break-word;
-    white-space: pre-wrap;
-}
-
-.message.user {
-    background: #eae5dd;
-    padding: 13px 19px;
-    border-radius: 17px 17px 5px 17px;
-}
-
-.message.assistant {
-    padding: 8px 2px;
-    width: 100%;
-}
-
-.assistant-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.assistant-avatar {
-    background: var(--primary);
+.suggestions button {
+    background: var(--panel2);
     color: white;
-    height: 30px;
-    width: 30px;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-}
-
-.assistant-name {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.message-text {
-    unicode-bidi: plaintext;
-    direction: auto;
-}
-
-.copy-button {
-    margin-top: 10px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 5px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 8px;
     font-size: 12px;
 }
 
-.copy-button:hover {
-    color: var(--primary);
+.message {
+    margin-bottom: 18px;
 }
 
-/* TYPING */
-
-.typing {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 15px 0;
+.role {
+    font-size: 11px;
+    color: #a59aff;
+    margin-bottom: 7px;
 }
 
-.dot {
-    width: 7px;
-    height: 7px;
-    background: var(--primary);
-    border-radius: 50%;
-    animation: typing 1.2s infinite;
+.message.user .role {
+    color: var(--green);
 }
 
-.dot:nth-child(2) {
-    animation-delay: 0.2s;
+.bubble {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 13px;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    unicode-bidi: plaintext;
 }
 
-.dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes typing {
-    0%, 60%, 100% {
-        opacity: 0.3;
-        transform: translateY(0);
-    }
-
-    30% {
-        opacity: 1;
-        transform: translateY(-5px);
-    }
+.message.user .bubble {
+    background: #1e2950;
 }
 
 /* INPUT */
 
-.input-area {
-    padding: 14px 20px 20px;
-    background: var(--bg);
+.input-box {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 13px;
 }
 
-.input-wrapper {
-    max-width: 850px;
-    margin: auto;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: 0 3px 20px rgba(0,0,0,0.04);
-    padding: 14px;
-}
-
-textarea {
+.input-box textarea {
     width: 100%;
-    min-height: 55px;
-    max-height: 180px;
-    resize: none;
-    border: none;
+    min-height: 95px;
+    max-height: 170px;
+    resize: vertical;
+    background: var(--panel2);
+    color: white;
+    border: 1px solid var(--border);
     outline: none;
-    font-family: inherit;
-    font-size: 14px;
-    color: var(--text);
-    background: transparent;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 13px;
     line-height: 1.8;
-    direction: auto;
 }
 
-.input-bottom {
+.input-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-top: 10px;
 }
 
-.status {
+.input-actions span {
     color: var(--muted);
     font-size: 11px;
+    line-height: 1.7;
 }
 
-.status.error {
-    color: #c0392b;
-}
-
-.send-btn {
-    border: none;
-    background: var(--primary);
+.send {
+    background: var(--accent);
     color: white;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 21px;
-    transition: 0.2s;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
 }
 
-.send-btn:hover {
-    background: var(--primary-hover);
+/* CODE PANEL */
+
+.code-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: #0b1020;
 }
 
-.send-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+.code-toolbar {
+    padding: 12px;
+    background: var(--panel);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
 }
 
-.footer-text {
-    text-align: center;
+.code-toolbar span {
+    font-size: 12px;
     color: var(--muted);
-    font-size: 10px;
-    margin-top: 10px;
+    margin-left: auto;
+}
+
+.editor {
+    flex: 1;
+    min-height: 120px;
+    width: 100%;
+    resize: none;
+    outline: none;
+    background: #0a1020;
+    color: #d4e2fa;
+    padding: 20px;
+    border: none;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    direction: ltr;
+    text-align: left;
+    tab-size: 4;
+}
+
+.preview-header {
+    padding: 12px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+}
+
+.preview {
+    height: 35%;
+    min-height: 140px;
+    background: white;
+    width: 100%;
+    border: none;
 }
 
 /* MOBILE */
 
-.mobile-new {
+.mobile-tabs {
     display: none;
 }
 
-@media (max-width: 768px) {
+@media(max-width:800px) {
 
-    .sidebar {
+    header {
+        padding: 11px;
+    }
+
+    .brand h2 {
+        font-size: 15px;
+    }
+
+    .brand p {
+        font-size: 10px;
+    }
+
+    .logo {
+        width: 39px;
+        height: 39px;
+    }
+
+    .workspace {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .mobile-tabs {
+        display: flex;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-tabs button {
+        flex: 1;
+        background: transparent;
+        color: var(--muted);
+        border: none;
+        padding: 13px;
+    }
+
+    .mobile-tabs button.active {
+        color: white;
+        border-bottom: 2px solid var(--accent);
+    }
+
+    .chat-panel,
+    .code-panel {
+        flex: 1;
+        min-height: 0;
+    }
+
+    .code-panel {
         display: none;
     }
 
-    .header {
-        height: 62px;
-        padding: 0 14px;
+    .workspace.show-code .chat-panel {
+        display: none;
     }
 
-    .header-title {
-        font-size: 17px;
+    .workspace.show-code .code-panel {
+        display: flex;
     }
 
-    .model-select {
-        max-width: 165px;
-        font-size: 11px;
-        padding: 9px 5px;
-    }
-
-    .mobile-new {
-        display: block;
-        border: none;
-        background: transparent;
-        font-size: 24px;
-        color: var(--primary);
-        cursor: pointer;
-    }
-
-    .chat-container {
-        padding: 18px 15px;
-    }
-
-    .welcome {
-        padding-top: 60px;
-    }
-
-    .welcome h1 {
-        font-size: 23px;
-    }
-
-    .welcome p {
-        font-size: 13px;
+    .messages {
+        padding: 12px;
     }
 
     .suggestions {
-        grid-template-columns: 1fr;
-        margin-top: 25px;
-        gap: 9px;
+        grid-template-columns: 1fr 1fr;
     }
 
-    .suggestion {
-        padding: 14px;
-    }
-
-    .message {
-        max-width: 95%;
-        font-size: 13px;
-    }
-
-    .input-area {
-        padding: 10px 12px 13px;
-    }
-
-    .input-wrapper {
-        border-radius: 16px;
+    .preview {
+        height: 35%;
     }
 
 }
@@ -491,711 +457,754 @@ textarea {
 
 <div class="app">
 
-    <!-- SIDEBAR -->
+<header>
 
-    <aside class="sidebar">
+    <div class="brand">
 
-        <div class="logo">
-            Claude AI
+        <div class="logo">&lt;/&gt;</div>
+
+        <div>
+            <h2>MyCode AI</h2>
+            <p>هوش مصنوعی شخصی برنامه‌نویسی</p>
         </div>
 
-        <button class="new-chat" onclick="newChat()">
-            ＋ گفتگوی جدید
-        </button>
+    </div>
 
-        <div class="sidebar-title">
-            گفتگوی فعلی
-        </div>
+    <span class="status" id="connectionStatus">
+        مدل بارگذاری نشده
+    </span>
 
-        <div class="history-item" id="historyTitle">
-            گفتگوی جدید
-        </div>
-
-        <div class="sidebar-bottom">
-            Powered by CheaperInference
-        </div>
-
-    </aside>
+</header>
 
 
-    <!-- MAIN CHAT -->
+<div class="model-bar">
 
-    <main class="main">
+    <select id="modelSelect">
 
-        <header class="header">
+        <option value="coder">
+            Qwen2.5 Coder 1.5B
+        </option>
 
-            <div class="header-title">
-                Claude
-            </div>
+        <option value="light">
+            SmolLM2 360M - سبک
+        </option>
 
-            <select id="modelSelect" class="model-select">
-                <option value="claude-sonnet-5">
-                    Claude Sonnet 5
-                </option>
+    </select>
 
-                <option value="claude-opus-4.6">
-                    Claude Opus 4.6
-                </option>
-            </select>
+    <button class="btn primary" id="loadBtn">
+        فعال‌سازی هوش مصنوعی
+    </button>
 
-            <button class="mobile-new" onclick="newChat()" title="گفتگوی جدید">
-                ＋
+</div>
+
+<div class="progress">
+    <div class="progress-fill" id="progressFill"></div>
+</div>
+
+
+<div class="mobile-tabs">
+
+    <button class="active" id="chatTab">
+        گفتگو
+    </button>
+
+    <button id="codeTab">
+        محیط کدنویسی
+    </button>
+
+</div>
+
+
+<div class="workspace" id="workspace">
+
+    <section class="chat-panel">
+
+        <div class="panel-header">
+
+            <h3>گفتگو با هوش مصنوعی</h3>
+
+            <button class="btn" id="clearBtn">
+                گفتگوی جدید
             </button>
 
-        </header>
-
-
-        <!-- CHAT MESSAGES -->
-
-        <div class="chat-container" id="chatContainer">
-
-            <div class="chat-content" id="chatContent">
-
-                <div class="welcome" id="welcome">
-
-                    <div class="claude-icon">
-                        ✳
-                    </div>
-
-                    <h1>
-                        سلام، من Claude هستم
-                    </h1>
-
-                    <p>
-                        امروز چطور می‌تونم کمکت کنم؟
-                        <br>
-                        می‌تونی هر سؤالی داری از من بپرسی.
-                    </p>
-
-                    <div class="suggestions">
-
-                        <button class="suggestion" onclick="sendSuggestion('سلام، خودت را معرفی کن')">
-                            👋 خودت رو معرفی کن
-                        </button>
-
-                        <button class="suggestion" onclick="sendSuggestion('در برنامه نویسی HTML و JavaScript کمکم کن')">
-                            💻 کمک در برنامه‌نویسی
-                        </button>
-
-                        <button class="suggestion" onclick="sendSuggestion('یک داستان کوتاه و جذاب بنویس')">
-                            ✍️ نوشتن داستان
-                        </button>
-
-                        <button class="suggestion" onclick="sendSuggestion('هوش مصنوعی چگونه کار می‌کند؟')">
-                            🧠 درباره هوش مصنوعی
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div id="messages"></div>
-
-            </div>
-
         </div>
 
 
-        <!-- INPUT -->
+        <div class="messages" id="messages">
 
-        <div class="input-area">
+            <div class="welcome" id="welcome">
 
-            <div class="input-wrapper">
+                <div class="welcome-icon">
+                    &lt;/&gt;
+                </div>
 
-                <textarea
-                    id="messageInput"
-                    placeholder="پیامت را برای Claude بنویس..."
-                    rows="2"
-                ></textarea>
+                <h2>سلام، من MyCode AI هستم</h2>
 
-                <div class="input-bottom">
+                <p>
+                    دستیار شخصی برنامه‌نویسی تو.
+                    <br>
+                    می‌تونم کد تولید کنم، توضیح بدم
+                    و در رفع خطاها کمکت کنم.
+                </p>
 
-                    <span class="status" id="status">
-                        آماده گفتگو
-                    </span>
+                <div class="suggestions">
 
-                    <button
-                        class="send-btn"
-                        id="sendButton"
-                        onclick="sendMessage()"
-                        title="ارسال پیام"
-                    >
-                        ↑
+                    <button onclick="suggest('یک بازی مار با HTML CSS JavaScript بساز')">
+                        ساخت بازی مار
+                    </button>
+
+                    <button onclick="suggest('یک ماشین حساب زیبا با HTML CSS JavaScript بساز')">
+                        ساخت ماشین حساب
+                    </button>
+
+                    <button onclick="suggest('یک سایت فروشگاهی ساده و واکنش‌گرا با HTML بساز')">
+                        ساخت فروشگاه
+                    </button>
+
+                    <button onclick="suggest('یک برنامه ماشین حساب با Python بنویس')">
+                        برنامه Python
                     </button>
 
                 </div>
 
             </div>
 
-            <div class="footer-text">
-                پاسخ‌های هوش مصنوعی ممکن است اشتباه باشند.
+        </div>
+
+
+        <div class="input-box">
+
+            <textarea
+                id="prompt"
+                placeholder="مثلاً: یک بازی دوز با HTML بساز که بتوانم با کامپیوتر بازی کنم..."
+            ></textarea>
+
+            <div class="input-actions">
+
+                <span id="aiStatus">
+                    ابتدا مدل را فعال کن.
+                </span>
+
+                <button class="send" id="sendBtn">
+                    ارسال ↑
+                </button>
+
             </div>
 
         </div>
 
-    </main>
+    </section>
+
+
+    <section class="code-panel">
+
+        <div class="code-toolbar">
+
+            <span id="codeTitle">
+                Code Editor
+            </span>
+
+            <button class="btn" id="copyBtn">
+                کپی
+            </button>
+
+            <button class="btn" id="downloadBtn">
+                دانلود
+            </button>
+
+            <button class="btn primary" id="runBtn">
+                اجرای HTML
+            </button>
+
+        </div>
+
+
+        <textarea
+            class="editor"
+            id="codeEditor"
+            spellcheck="false"
+            placeholder="// کدهای تولیدشده اینجا نمایش داده می‌شوند..."
+        ></textarea>
+
+
+        <div class="preview-header">
+            پیش‌نمایش HTML
+        </div>
+
+        <iframe
+            id="preview"
+            class="preview"
+            sandbox="allow-scripts"
+            title="HTML Preview"
+        ></iframe>
+
+    </section>
+
+</div>
 
 </div>
 
 
-<script>
+<script type="module">
 
-/* ==========================================
-   CHEAPER INFERENCE API CONFIG
-========================================== */
-
-const API_BASE_URL =
-    "https://api.cheaperinference.com/v1";
-
-const API_KEY =
-    "ci_live_67c77f24a3b3ba7680fd90593da801b1d17210d48eb0a5be";
+import * as webllm from
+"https://esm.run/@mlc-ai/web-llm@0.2.85";
 
 
-/* ==========================================
+/* ==============================
    ELEMENTS
-========================================== */
+============================== */
 
-const messageInput =
-    document.getElementById("messageInput");
+const $ = id => document.getElementById(id);
 
-const messagesElement =
-    document.getElementById("messages");
+const messages = $("messages");
 
-const sendButton =
-    document.getElementById("sendButton");
+const promptInput = $("prompt");
 
-const statusElement =
-    document.getElementById("status");
+const codeEditor = $("codeEditor");
 
-const chatContainer =
-    document.getElementById("chatContainer");
+const sendBtn = $("sendBtn");
 
-const modelSelect =
-    document.getElementById("modelSelect");
+const loadBtn = $("loadBtn");
 
+const modelSelect = $("modelSelect");
 
-/* ==========================================
-   CHAT STATE
-========================================== */
+const preview = $("preview");
 
-let conversation = [];
+const aiStatus = $("aiStatus");
 
-let isLoading = false;
+const connectionStatus = $("connectionStatus");
 
-let chatVersion = 0;
-
-let activeController = null;
+const progressFill = $("progressFill");
 
 
-/* ==========================================
+/* ==============================
+   LOCAL AI MODELS
+============================== */
+
+const CODER_MODEL =
+"qwen2.5-coder-1.5b-instruct-q4f16";
+
+const LIGHT_MODEL =
+"SmolLM2-360M-Instruct-q4f16_1-MLC";
+
+
+const coderConfig = {
+
+    model_list: [
+
+        {
+
+            model:
+"https://huggingface.co/skillsafe-ai/qwen2.5-coder-1.5b-instruct-q4f16",
+
+            model_id: CODER_MODEL,
+
+            model_lib:
+"https://huggingface.co/skillsafe-ai/qwen2.5-coder-1.5b-instruct-q4f16/resolve/main/lib/Qwen2-1.5B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+
+            overrides: {
+
+                context_window_size: 4096,
+
+                prefill_chunk_size: 1024
+
+            }
+
+        },
+
+        ...webllm.prebuiltAppConfig.model_list
+
+    ],
+
+    cacheBackend: "cache"
+
+};
+
+
+/* ==============================
+   AI STATE
+============================== */
+
+let engine = null;
+
+let currentModel = null;
+
+let loading = false;
+
+let generating = false;
+
+let currentLanguage = "html";
+
+let history = [];
+
+
+/* ==============================
    SYSTEM PROMPT
-========================================== */
+============================== */
 
 const SYSTEM_PROMPT = `
-You are Claude, an AI assistant.
+You are MyCode AI, a personal coding assistant.
 
-You are helpful, intelligent, accurate,
-friendly and professional.
+Your main purpose is writing working computer code.
 
-If the user speaks Persian,
-respond naturally in Persian.
+You are specialized in:
 
-If the user speaks English,
-respond in English.
+HTML
+CSS
+JavaScript
+Python
+C++
+PHP
+SQL
 
-Remember the previous conversation context.
+Rules:
 
-Provide clear and useful answers.
+1. Understand the user's programming request.
 
-When asked to write code, provide complete,
-working and properly formatted code.
+2. Produce real, functional code.
 
-Do not claim to have performed actions
-that you have not actually performed.
+3. Avoid pseudocode when actual code is requested.
+
+4. For HTML projects, generate a complete standalone
+HTML document including CSS and JavaScript.
+
+5. Put code inside markdown code fences with
+the correct language name.
+
+6. Keep explanations concise.
+
+7. If the user requests a modification,
+modify the previous implementation.
+
+8. If a bug is reported, identify the likely cause
+and provide corrected code.
+
+9. Respond in Persian when the user speaks Persian.
+
+10. Never falsely claim that code was tested.
+
+11. Prefer simple implementations
+without unnecessary external dependencies.
+
+You are a local AI assistant running in the browser.
 `;
 
 
-/* ==========================================
-   STATUS
-========================================== */
-
-function setStatus(text, error = false) {
-
-    statusElement.textContent = text;
-
-    statusElement.classList.toggle(
-        "error",
-        error
-    );
-
-}
-
-
-/* ==========================================
-   SCROLL
-========================================== */
-
-function scrollToBottom() {
-
-    requestAnimationFrame(() => {
-
-        chatContainer.scrollTop =
-            chatContainer.scrollHeight;
-
-    });
-
-}
-
-
-/* ==========================================
-   MESSAGE UI
-========================================== */
-
-function appendMessage(role, content) {
-
-    const row = document.createElement("div");
-
-    row.className = "message-row " + role;
-
-    const message = document.createElement("div");
-
-    message.className = "message " + role;
-
-
-    if (role === "assistant") {
-
-        const header = document.createElement("div");
-
-        header.className = "assistant-header";
-
-
-        const avatar = document.createElement("div");
-
-        avatar.className = "assistant-avatar";
-
-        avatar.textContent = "✳";
-
-
-        const name = document.createElement("span");
-
-        name.className = "assistant-name";
-
-        name.textContent = "Claude";
-
-
-        header.appendChild(avatar);
-
-        header.appendChild(name);
-
-        message.appendChild(header);
-
-
-        const text = document.createElement("div");
-
-        text.className = "message-text";
-
-        text.textContent = content;
-
-        message.appendChild(text);
-
-
-        const copy = document.createElement("button");
-
-        copy.className = "copy-button";
-
-        copy.textContent = "⧉ کپی پاسخ";
-
-        copy.onclick = async () => {
-
-            try {
-
-                await navigator.clipboard.writeText(content);
-
-                copy.textContent = "✓ کپی شد";
-
-                setTimeout(() => {
-
-                    copy.textContent = "⧉ کپی پاسخ";
-
-                }, 1500);
-
-            } catch (error) {
-
-                copy.textContent = "کپی ناموفق";
-
-            }
-
-        };
-
-        message.appendChild(copy);
-
-    }
-
-    else {
-
-        message.textContent = content;
-
-    }
-
-
-    row.appendChild(message);
-
-    messagesElement.appendChild(row);
-
-    scrollToBottom();
-
-    return row;
-
-}
-
-
-/* ==========================================
-   TYPING INDICATOR
-========================================== */
-
-function showTyping() {
-
-    const row = document.createElement("div");
-
-    row.className = "message-row assistant";
-
-
-    const box = document.createElement("div");
-
-    box.className = "message assistant";
-
-
-    const header = document.createElement("div");
-
-    header.className = "assistant-header";
-
-
-    const avatar = document.createElement("div");
-
-    avatar.className = "assistant-avatar";
-
-    avatar.textContent = "✳";
-
-
-    const name = document.createElement("span");
-
-    name.className = "assistant-name";
-
-    name.textContent = "Claude";
-
-
-    header.appendChild(avatar);
-
-    header.appendChild(name);
-
-
-    const typing = document.createElement("div");
-
-    typing.className = "typing";
-
-
-    for (let i = 0; i < 3; i++) {
-
-        const dot = document.createElement("span");
-
-        dot.className = "dot";
-
-        typing.appendChild(dot);
-
-    }
-
-
-    box.appendChild(header);
-
-    box.appendChild(typing);
-
-    row.appendChild(box);
-
-    messagesElement.appendChild(row);
-
-    scrollToBottom();
-
-    return row;
-
-}
-
-
-/* ==========================================
-   FETCH MODELS
-========================================== */
-
-async function loadModels() {
+/* ==============================
+   STORAGE
+============================== */
+
+function saveState() {
 
     try {
 
-        const response = await fetch(
-            API_BASE_URL + "/models",
-            {
-                method: "GET",
+        localStorage.setItem(
+            "mycode_history",
+            JSON.stringify(history.slice(-20))
+        );
 
-                headers: {
-                    "Authorization": "Bearer " + API_KEY
+        localStorage.setItem(
+            "mycode_editor",
+            codeEditor.value
+        );
+
+        localStorage.setItem(
+            "mycode_language",
+            currentLanguage
+        );
+
+    } catch (error) {
+
+        console.warn("Local storage unavailable", error);
+
+    }
+
+}
+
+
+function restoreState() {
+
+    try {
+
+        const savedHistory =
+            localStorage.getItem("mycode_history");
+
+        const savedCode =
+            localStorage.getItem("mycode_editor");
+
+        const savedLanguage =
+            localStorage.getItem("mycode_language");
+
+
+        if (savedHistory) {
+
+            const parsed = JSON.parse(savedHistory);
+
+            if (Array.isArray(parsed)) {
+
+                history = parsed.filter(item =>
+
+                    item &&
+                    ["user", "assistant"].includes(item.role) &&
+                    typeof item.content === "string"
+
+                ).slice(-20);
+
+                if (history.length) {
+
+                    $("welcome").style.display = "none";
+
+                    history.forEach(item => {
+
+                        addMessage(
+                            item.role,
+                            item.content
+                        );
+
+                    });
+
                 }
+
             }
+
+        }
+
+
+        if (savedCode) {
+
+            codeEditor.value = savedCode;
+
+        }
+
+
+        if (savedLanguage) {
+
+            currentLanguage = savedLanguage;
+
+        }
+
+    } catch (error) {
+
+        console.warn("Could not restore data", error);
+
+    }
+
+}
+
+
+/* ==============================
+   UI HELPERS
+============================== */
+
+function setStatus(text) {
+
+    aiStatus.textContent = text;
+
+}
+
+
+function scrollBottom() {
+
+    messages.scrollTop = messages.scrollHeight;
+
+}
+
+
+function addMessage(role, content) {
+
+    const box = document.createElement("div");
+
+    box.className = "message " + role;
+
+
+    const title = document.createElement("div");
+
+    title.className = "role";
+
+    title.textContent =
+        role === "user" ? "شما" : "MyCode AI";
+
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.textContent = content;
+
+
+    box.appendChild(title);
+
+    box.appendChild(bubble);
+
+    messages.appendChild(box);
+
+    scrollBottom();
+
+    return bubble;
+
+}
+
+
+/* ==============================
+   LOAD LOCAL MODEL
+============================== */
+
+async function loadModel() {
+
+    if (loading || generating) {
+        return;
+    }
+
+
+    if (!navigator.gpu) {
+
+        setStatus(
+            "مرورگر یا دستگاهت از WebGPU پشتیبانی نمی‌کند."
         );
 
-        if (!response.ok) {
-            return;
+        connectionStatus.textContent =
+            "WebGPU unavailable";
+
+        return;
+
+    }
+
+
+    const adapter = await navigator.gpu.requestAdapter();
+
+    if (!adapter) {
+
+        setStatus(
+            "پردازنده گرافیکی سازگار پیدا نشد."
+        );
+
+        return;
+
+    }
+
+
+    loading = true;
+
+    loadBtn.disabled = true;
+
+    sendBtn.disabled = true;
+
+    modelSelect.disabled = true;
+
+
+    const selected =
+        modelSelect.value === "coder"
+        ? CODER_MODEL
+        : LIGHT_MODEL;
+
+
+    setStatus("در حال بارگذاری مغز هوش مصنوعی...");
+
+
+    try {
+
+        if (engine && engine.unload) {
+
+            await engine.unload();
+
         }
 
-        const result = await response.json();
-
-        if (!Array.isArray(result.data)) {
-            return;
-        }
+        engine = null;
+        currentModel = null;
 
 
-        const claudeModels = result.data.filter(model => {
+        engine = await webllm.CreateMLCEngine(
 
-            return typeof model.id === "string" &&
-                   model.id.toLowerCase().includes("claude");
+            selected,
 
-        });
+            {
 
+                appConfig: coderConfig,
 
-        if (claudeModels.length === 0) {
-            return;
-        }
+                initProgressCallback: report => {
 
+                    const percent = Math.round(
+                        (report.progress || 0) * 100
+                    );
 
-        const previousModel = modelSelect.value;
-
-        modelSelect.innerHTML = "";
-
-
-        claudeModels.forEach(model => {
-
-            const option = document.createElement("option");
-
-            option.value = model.id;
-
-            option.textContent = model.id;
-
-            modelSelect.appendChild(option);
-
-        });
+                    progressFill.style.width =
+                        percent + "%";
 
 
-        const modelExists = claudeModels.some(
-            model => model.id === previousModel
+                    setStatus(
+                        "بارگذاری مدل: " +
+                        percent + "%"
+                    );
+
+                }
+
+            }
+
         );
 
 
-        if (modelExists) {
+        currentModel = selected;
 
-            modelSelect.value = previousModel;
+        progressFill.style.width = "100%";
 
-        }
+        connectionStatus.textContent =
+            "● AI Ready";
 
-        else {
+        connectionStatus.classList.add("online");
 
-            modelSelect.value = claudeModels[0].id;
+        setStatus(
+            "هوش مصنوعی آماده کدنویسی است."
+        );
 
-        }
-
-
-        setStatus("مدل‌های Claude بارگذاری شدند");
+        loadBtn.textContent =
+            "مدل فعال شد";
 
     }
 
     catch (error) {
 
-        console.log(
-            "Could not load models:",
+        console.error(error);
+
+        engine = null;
+        currentModel = null;
+
+        connectionStatus.textContent =
+            "مدل فعال نشد";
+
+        connectionStatus.classList.remove("online");
+
+        setStatus(
+            "خطا در بارگذاری مدل: " +
             error.message
         );
 
+        loadBtn.textContent =
+            "تلاش مجدد";
+
+    }
+
+    finally {
+
+        loading = false;
+
+        loadBtn.disabled = false;
+
+        sendBtn.disabled = false;
+
+        modelSelect.disabled = false;
+
     }
 
 }
 
 
-/* ==========================================
-   GET AI RESPONSE
-========================================== */
+/* ==============================
+   EXTRACT CODE
+============================== */
 
-async function getClaudeResponse(messages, signal) {
+function extractCode(text) {
 
-    const selectedModel = modelSelect.value;
+    const regex =
+        /```([a-zA-Z0-9+#.-]*)[^\n]*\n([\s\S]*?)```/g;
 
+    const blocks = [...text.matchAll(regex)];
 
-    const response = await fetch(
-        API_BASE_URL + "/chat/completions",
-        {
+    if (blocks.length > 0) {
 
-            method: "POST",
+        let selected = blocks[0];
 
-            signal: signal,
-
-            headers: {
-
-                "Content-Type": "application/json",
-
-                "Authorization": "Bearer " + API_KEY
-
-            },
-
-            body: JSON.stringify({
-
-                model: selectedModel,
-
-                messages: [
-
-                    {
-                        role: "system",
-                        content: SYSTEM_PROMPT
-                    },
-
-                    ...messages
-
-                ],
-
-                max_tokens: 2048,
-
-                stream: false
-
-            })
-
-        }
-    );
-
-
-    let data;
-
-    try {
-
-        data = await response.json();
-
-    }
-
-    catch {
-
-        throw new Error(
-            "پاسخ سرور قابل خواندن نیست. کد: " +
-            response.status
+        const htmlBlock = blocks.find(
+            block => block[1].toLowerCase() === "html"
         );
 
-    }
-
-
-    if (!response.ok) {
-
-        let errorMessage =
-            data.error?.message ||
-            data.message ||
-            "خطای نامشخص از سمت سرور";
-
-
-        if (response.status === 401) {
-
-            errorMessage =
-                "کلید API معتبر نیست یا دسترسی ندارد.";
-
-        }
-
-        else if (response.status === 402) {
-
-            errorMessage =
-                "اعتبار کیف پول API کافی نیست.";
-
-        }
-
-        else if (response.status === 429) {
-
-            errorMessage =
-                "محدودیت تعداد درخواست‌ها فعال شده است.";
-
-        }
-
-        else if (response.status === 404) {
-
-            errorMessage =
-                "مدل انتخابی یا مسیر API پیدا نشد.";
-
+        if (htmlBlock) {
+            selected = htmlBlock;
         }
 
 
-        throw new Error(errorMessage);
+        currentLanguage =
+            selected[1].toLowerCase() || "txt";
+
+        codeEditor.value =
+            selected[2].trim();
+
+        saveState();
+
+        return true;
 
     }
 
 
-    const content =
-        data.choices?.[0]?.message?.content;
+    const trimmed = text.trim();
 
+    if (
+        trimmed.startsWith("<!DOCTYPE html") ||
+        trimmed.startsWith("<html") ||
+        trimmed.startsWith("<!doctype html")
+    ) {
 
-    if (typeof content === "string" && content.trim()) {
+        codeEditor.value = trimmed;
 
-        return content;
+        currentLanguage = "html";
 
-    }
+        saveState();
 
-
-    if (Array.isArray(content)) {
-
-        const text = content
-            .filter(item => item.type === "text")
-            .map(item => item.text || "")
-            .join("\n");
-
-        if (text.trim()) {
-            return text;
-        }
+        return true;
 
     }
 
-
-    throw new Error(
-        "پاسخ معتبری از مدل دریافت نشد."
-    );
+    return false;
 
 }
 
 
-/* ==========================================
-   SEND MESSAGE
-========================================== */
+/* ==============================
+   AI GENERATION
+============================== */
 
 async function sendMessage() {
 
-    if (isLoading) {
+    if (generating || loading) {
         return;
     }
 
 
-    const text = messageInput.value.trim();
+    if (!engine || currentModel === null) {
+
+        setStatus(
+            "ابتدا روی فعال‌سازی هوش مصنوعی بزن."
+        );
+
+        return;
+
+    }
+
+
+    const text = promptInput.value.trim();
 
     if (!text) {
         return;
     }
 
 
-    const currentVersion = chatVersion;
+    generating = true;
+
+    sendBtn.disabled = true;
+
+    loadBtn.disabled = true;
+
+    modelSelect.disabled = true;
 
 
-    document.getElementById("welcome").style.display =
-        "none";
+    $("welcome").style.display = "none";
+
+    addMessage("user", text);
+
+    promptInput.value = "";
 
 
-    if (conversation.length === 0) {
-
-        document.getElementById("historyTitle").textContent =
-            text.length > 25 ?
-            text.substring(0, 25) + "..." :
-            text;
-
-    }
-
-
-    appendMessage("user", text);
-
-
-    conversation.push({
+    history.push({
 
         role: "user",
 
@@ -1204,233 +1213,493 @@ async function sendMessage() {
     });
 
 
-    messageInput.value = "";
-
-    messageInput.style.height = "auto";
-
-
-    isLoading = true;
-
-    sendButton.disabled = true;
-
-    setStatus("Claude در حال پاسخ دادن است...");
+    setStatus(
+        "هوش مصنوعی در حال تولید کد است..."
+    );
 
 
-    const typingElement = showTyping();
+    const outputBubble =
+        addMessage("assistant", "");
 
 
-    const controller = new AbortController();
-
-    activeController = controller;
+    let output = "";
 
 
     try {
 
-        const response = await getClaudeResponse(
-            conversation,
-            controller.signal
-        );
+        const contextMessages =
+            history.slice(-5);
 
 
-        if (currentVersion !== chatVersion) {
-            return;
+        const stream =
+            await engine.chat.completions.create({
+
+                messages: [
+
+                    {
+                        role: "system",
+                        content: SYSTEM_PROMPT
+                    },
+
+                    ...contextMessages
+
+                ],
+
+                temperature: 0.3,
+
+                top_p: 0.9,
+
+                max_tokens: 1800,
+
+                stream: true
+
+            });
+
+
+        for await (const chunk of stream) {
+
+            const token =
+                chunk.choices?.[0]?.delta?.content || "";
+
+
+            output += token;
+
+            outputBubble.textContent = output;
+
+            scrollBottom();
+
         }
 
 
-        typingElement.remove();
+        if (!output.trim()) {
+
+            throw new Error(
+                "مدل پاسخ متنی تولید نکرد."
+            );
+
+        }
 
 
-        conversation.push({
+        history.push({
 
             role: "assistant",
 
-            content: response
+            content: output
 
         });
 
 
-        appendMessage("assistant", response);
+        const hasCode =
+            extractCode(output);
 
 
-        setStatus("پاسخ دریافت شد");
+        if (hasCode) {
+
+            setStatus(
+                "کد تولید شد و داخل ویرایشگر قرار گرفت."
+            );
+
+        }
+
+        else {
+
+            setStatus(
+                "پاسخ هوش مصنوعی دریافت شد."
+            );
+
+        }
+
+
+        saveState();
 
     }
 
     catch (error) {
 
-        if (currentVersion !== chatVersion) {
-            return;
-        }
+        console.error(error);
+
+        outputBubble.textContent =
+            "خطا در تولید پاسخ:\n" +
+            error.message;
 
 
-        typingElement.remove();
+        history.pop();
 
-
-        // Remove the failed user request from API history
-
-        conversation.pop();
-
-
-        let errorText = error.message;
-
-
-        if (error instanceof TypeError) {
-
-            errorText =
-                "اتصال به API برقرار نشد. " +
-                "احتمال مشکل اینترنت یا محدودیت CORS مرورگر وجود دارد.";
-
-        }
-
-
-        appendMessage(
-            "assistant",
-            "خطا در دریافت پاسخ:\n\n" + errorText
+        setStatus(
+            "تولید پاسخ ناموفق بود."
         );
 
-
-        setStatus("خطا در اتصال", true);
-
-        console.error("Claude API Error:", error);
+        saveState();
 
     }
 
     finally {
 
-        if (currentVersion === chatVersion) {
+        generating = false;
 
-            isLoading = false;
+        sendBtn.disabled = false;
 
-            activeController = null;
+        loadBtn.disabled = false;
 
-            sendButton.disabled = false;
-
-            messageInput.focus();
-
-        }
+        modelSelect.disabled = false;
 
     }
 
 }
 
 
-/* ==========================================
-   SUGGESTION BUTTONS
-========================================== */
+/* ==============================
+   SUGGESTIONS
+============================== */
 
-function sendSuggestion(text) {
+window.suggest = function(text) {
 
-    messageInput.value = text;
+    promptInput.value = text;
 
-    sendMessage();
+    promptInput.focus();
 
-}
-
-
-/* ==========================================
-   NEW CHAT
-========================================== */
-
-function newChat() {
-
-    chatVersion++;
+};
 
 
-    if (activeController) {
+/* ==============================
+   CODE PREVIEW
+============================== */
 
-        activeController.abort();
+function runCode() {
 
-        activeController = null;
+    const code = codeEditor.value.trim();
+
+    if (!code) {
+
+        setStatus("ابتدا یک کد وارد کن.");
+
+        return;
 
     }
 
-
-    conversation = [];
-
-    isLoading = false;
-
-
-    messagesElement.innerHTML = "";
-
-
-    document.getElementById("welcome").style.display =
-        "block";
-
-
-    document.getElementById("historyTitle").textContent =
-        "گفتگوی جدید";
-
-
-    messageInput.value = "";
-
-    sendButton.disabled = false;
-
-
-    setStatus("گفتگوی جدید آماده است");
-
-
-    messageInput.focus();
-
-}
-
-
-/* ==========================================
-   KEYBOARD
-========================================== */
-
-messageInput.addEventListener("keydown", event => {
 
     if (
-        event.key === "Enter" &&
-        !event.shiftKey &&
-        !event.isComposing
+        currentLanguage !== "html" &&
+        currentLanguage !== "htm"
     ) {
 
-        event.preventDefault();
+        setStatus(
+            "پیش‌نمایش فقط برای کد HTML فعال است."
+        );
 
-        sendMessage();
+        return;
 
     }
 
-});
+
+    preview.srcdoc = code;
+
+    setStatus(
+        "پیش‌نمایش HTML اجرا شد."
+    );
+
+}
 
 
-/* ==========================================
-   AUTO RESIZE TEXTAREA
-========================================== */
+/* ==============================
+   DOWNLOAD CODE
+============================== */
 
-messageInput.addEventListener("input", () => {
+function downloadCode() {
 
-    messageInput.style.height = "auto";
+    const code = codeEditor.value;
 
-    messageInput.style.height =
-        Math.min(messageInput.scrollHeight, 180) + "px";
+    if (!code.trim()) {
 
-});
+        setStatus(
+            "کدی برای دانلود وجود ندارد."
+        );
+
+        return;
+
+    }
 
 
-/* ==========================================
-   INITIALIZE
-========================================== */
+    const extensions = {
 
-window.addEventListener("DOMContentLoaded", () => {
+        html: "html",
+        htm: "html",
+        javascript: "js",
+        js: "js",
+        python: "py",
+        py: "py",
+        cpp: "cpp",
+        "c++": "cpp",
+        css: "css",
+        php: "php",
+        sql: "sql",
+        json: "json"
 
-    setStatus("در حال بررسی مدل‌های Claude...");
+    };
 
-    loadModels().finally(() => {
+
+    const extension =
+        extensions[currentLanguage] || "txt";
+
+
+    const fileName =
+        "mycode-project." + extension;
+
+
+    const blob = new Blob(
+
+        [code],
+
+        {
+            type: "text/plain;charset=utf-8"
+        }
+
+    );
+
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = fileName;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+
+    setTimeout(() => {
+
+        URL.revokeObjectURL(url);
+
+    }, 1000);
+
+
+    setStatus(
+        "فایل کد آماده دانلود شد."
+    );
+
+}
+
+
+/* ==============================
+   COPY CODE
+============================== */
+
+async function copyCode() {
+
+    if (!codeEditor.value.trim()) {
+        return;
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(
+            codeEditor.value
+        );
+
+        setStatus("کد کپی شد.");
+
+    } catch {
+
+        setStatus("کپی کد ناموفق بود.");
+
+    }
+
+}
+
+
+/* ==============================
+   NEW CHAT
+============================== */
+
+function clearChat() {
+
+    if (generating || loading) {
+        return;
+    }
+
+
+    history = [];
+
+    messages.innerHTML = "";
+
+    codeEditor.value = "";
+
+    preview.srcdoc = "";
+
+    currentLanguage = "html";
+
+
+    const welcome = document.createElement("div");
+
+    welcome.className = "welcome";
+
+    welcome.textContent =
+        "گفتگوی جدید آماده است. درخواست برنامه‌نویسی خودت را بنویس.";
+
+    messages.appendChild(welcome);
+
+
+    saveState();
+
+    setStatus(
+        engine
+        ? "گفتگوی جدید آماده است."
+        : "ابتدا مدل را فعال کن."
+    );
+
+}
+
+
+/* ==============================
+   MOBILE TABS
+============================== */
+
+function showTab(tab) {
+
+    const workspace = $("workspace");
+
+    const chatTab = $("chatTab");
+
+    const codeTab = $("codeTab");
+
+
+    if (tab === "code") {
+
+        workspace.classList.add("show-code");
+
+        codeTab.classList.add("active");
+
+        chatTab.classList.remove("active");
+
+    }
+
+    else {
+
+        workspace.classList.remove("show-code");
+
+        chatTab.classList.add("active");
+
+        codeTab.classList.remove("active");
+
+    }
+
+}
+
+
+/* ==============================
+   EVENTS
+============================== */
+
+loadBtn.addEventListener(
+    "click",
+    loadModel
+);
+
+sendBtn.addEventListener(
+    "click",
+    sendMessage
+);
+
+$("runBtn").addEventListener(
+    "click",
+    runCode
+);
+
+$("downloadBtn").addEventListener(
+    "click",
+    downloadCode
+);
+
+$("copyBtn").addEventListener(
+    "click",
+    copyCode
+);
+
+$("clearBtn").addEventListener(
+    "click",
+    clearChat
+);
+
+
+$("chatTab").addEventListener(
+    "click",
+    () => showTab("chat")
+);
+
+$("codeTab").addEventListener(
+    "click",
+    () => showTab("code")
+);
+
+
+promptInput.addEventListener(
+    "keydown",
+    event => {
 
         if (
-            statusElement.textContent ===
-            "در حال بررسی مدل‌های Claude..."
+            event.key === "Enter" &&
+            event.ctrlKey
         ) {
 
-            setStatus("آماده گفتگو");
+            event.preventDefault();
+
+            sendMessage();
 
         }
 
-    });
+    }
+);
 
-});
+
+codeEditor.addEventListener(
+    "input",
+    saveState
+);
+
+
+modelSelect.addEventListener(
+    "change",
+    () => {
+
+        if (
+            currentModel &&
+            currentModel !== (
+                modelSelect.value === "coder"
+                ? CODER_MODEL
+                : LIGHT_MODEL
+            )
+        ) {
+
+            connectionStatus.textContent =
+                "مدل جدید را فعال کن";
+
+            connectionStatus.classList.remove("online");
+
+            setStatus(
+                "برای تغییر مدل، دکمه فعال‌سازی را بزن."
+            );
+
+        }
+
+    }
+);
+
+
+/* ==============================
+   START
+============================== */
+
+restoreState();
+
+setStatus(
+    "مدل موردنظر را انتخاب و فعال کن."
+);
 
 </script>
 
