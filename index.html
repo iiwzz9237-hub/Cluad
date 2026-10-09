@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Claude AI Chat</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #f7f5f0;
+    --sidebar: #eeeae3;
+    --primary: #c56b4d;
+    --primary-hover: #ad583d;
+    --text: #282622;
+    --muted: #89847c;
+    --border: #e5e0d8;
+    --white: #ffffff;
+}
+
+body {
+    font-family: Tahoma, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100dvh;
+    overflow: hidden;
+}
+
+/* MAIN LAYOUT */
+
+.app {
+    display: flex;
+    width: 100%;
+    height: 100dvh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 260px;
+    background: var(--sidebar);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+    flex-shrink: 0;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.new-chat {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #d8d2c9;
+    background: white;
+    color: var(--text);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: right;
+    transition: 0.2s;
+}
+
+.new-chat:hover {
+    background: #faf7f2;
+}
+
+.sidebar-title {
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 10px;
+}
+
+.history-item {
+    padding: 13px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.5);
+    font-size: 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    padding-top: 15px;
+}
+
+/* MAIN */
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+}
+
+/* HEADER */
+
+.header {
+    height: 68px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.55);
+    gap: 15px;
+}
+
+.header-title {
+    font-size: 19px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.model-select {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    color: var(--text);
+    padding: 10px;
+    max-width: 220px;
+    font-size: 13px;
+    outline: none;
+}
+
+/* CHAT */
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 20px;
+    scroll-behavior: smooth;
+}
+
+.chat-content {
+    max-width: 850px;
+    margin: auto;
+    min-height: 100%;
+}
+
+/* WELCOME */
+
+.welcome {
+    text-align: center;
+    padding-top: min(15vh, 110px);
+}
+
+.claude-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--primary);
+    color: white;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    font-size: 40px;
+}
+
+.welcome h1 {
+    font-size: 29px;
+    margin-bottom: 14px;
+    font-weight: bold;
+}
+
+.welcome p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 2;
+}
+
+.suggestions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 600px;
+    margin: 35px auto;
+}
+
+.suggestion {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 13px;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: right;
+    transition: 0.2s;
+}
+
+.suggestion:hover {
+    border-color: var(--primary);
+    background: #fffaf6;
+}
+
+/* MESSAGES */
+
+.message-row {
+    display: flex;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.message-row.user {
+    justify-content: flex-start;
+}
+
+.message-row.assistant {
+    justify-content: flex-start;
+}
+
+.message {
+    max-width: 85%;
+    line-height: 2;
+    font-size: 14px;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.message.user {
+    background: #eae5dd;
+    padding: 13px 19px;
+    border-radius: 17px 17px 5px 17px;
+}
+
+.message.assistant {
+    padding: 8px 2px;
+    width: 100%;
+}
+
+.assistant-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.assistant-avatar {
+    background: var(--primary);
+    color: white;
+    height: 30px;
+    width: 30px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.assistant-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.message-text {
+    unicode-bidi: plaintext;
+    direction: auto;
+}
+
+.copy-button {
+    margin-top: 10px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.copy-button:hover {
+    color: var(--primary);
+}
+
+/* TYPING */
+
+.typing {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 15px 0;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: typing 1.2s infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+
+    30% {
+        opacity: 1;
+        transform: translateY(-5px);
+    }
+}
+
+/* INPUT */
+
+.input-area {
+    padding: 14px 20px 20px;
+    background: var(--bg);
+}
+
+.input-wrapper {
+    max-width: 850px;
+    margin: auto;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 3px 20px rgba(0,0,0,0.04);
+    padding: 14px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 55px;
+    max-height: 180px;
+    resize: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: transparent;
+    line-height: 1.8;
+    direction: auto;
+}
+
+.input-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.status {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.status.error {
+    color: #c0392b;
+}
+
+.send-btn {
+    border: none;
+    background: var(--primary);
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 21px;
+    transition: 0.2s;
+}
+
+.send-btn:hover {
+    background: var(--primary-hover);
+}
+
+.send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.footer-text {
+    text-align: center;
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 10px;
+}
+
+/* MOBILE */
+
+.mobile-new {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .header {
+        height: 62px;
+        padding: 0 14px;
+    }
+
+    .header-title {
+        font-size: 17px;
+    }
+
+    .model-select {
+        max-width: 165px;
+        font-size: 11px;
+        padding: 9px 5px;
+    }
+
+    .mobile-new {
+        display: block;
+        border: none;
+        background: transparent;
+        font-size: 24px;
+        color: var(--primary);
+        cursor: pointer;
+    }
+
+    .chat-container {
+        padding: 18px 15px;
+    }
+
+    .welcome {
+        padding-top: 60px;
+    }
+
+    .welcome h1 {
+        font-size: 23px;
+    }
+
+    .welcome p {
+        font-size: 13px;
+    }
+
+    .suggestions {
+        grid-template-columns: 1fr;
+        margin-top: 25px;
+        gap: 9px;
+    }
+
+    .suggestion {
+        padding: 14px;
+    }
+
+    .message {
+        max-width: 95%;
+        font-size: 13px;
+    }
+
+    .input-area {
+        padding: 10px 12px 13px;
+    }
+
+    .input-wrapper {
+        border-radius: 16px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Claude AI
+        </div>
+
+        <button class="new-chat" onclick="newChat()">
+            ＋ گفتگوی جدید
+        </button>
+
+        <div class="sidebar-title">
+            گفتگوی فعلی
+        </div>
+
+        <div class="history-item" id="historyTitle">
+            گفتگوی جدید
+        </div>
+
+        <div class="sidebar-bottom">
+            Powered by CheaperInference
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CHAT -->
+
+    <main class="main">
+
+        <header class="header">
+
+            <div class="header-title">
+                Claude
+            </div>
+
+            <select id="modelSelect" class="model-select">
+                <option value="claude-sonnet-5">
+                    Claude Sonnet 5
+                </option>
+
+                <option value="claude-opus-4.6">
+                    Claude Opus 4.6
+                </option>
+            </select>
+
+            <button class="mobile-new" onclick="newChat()" title="گفتگوی جدید">
+                ＋
+            </button>
+
+        </header>
+
+
+        <!-- CHAT MESSAGES -->
+
+        <div class="chat-container" id="chatContainer">
+
+            <div class="chat-content" id="chatContent">
+
+                <div class="welcome" id="welcome">
+
+                    <div class="claude-icon">
+                        ✳
+                    </div>
+
+                    <h1>
+                        سلام، من Claude هستم
+                    </h1>
+
+                    <p>
+                        امروز چطور می‌تونم کمکت کنم؟
+                        <br>
+                        می‌تونی هر سؤالی داری از من بپرسی.
+                    </p>
+
+                    <div class="suggestions">
+
+                        <button class="suggestion" onclick="sendSuggestion('سلام، خودت را معرفی کن')">
+                            👋 خودت رو معرفی کن
+                        </button>
+
+                        <button class="suggestion" onclick="sendSuggestion('در برنامه نویسی HTML و JavaScript کمکم کن')">
+                            💻 کمک در برنامه‌نویسی
+                        </button>
+
+                        <button class="suggestion" onclick="sendSuggestion('یک داستان کوتاه و جذاب بنویس')">
+                            ✍️ نوشتن داستان
+                        </button>
+
+                        <button class="suggestion" onclick="sendSuggestion('هوش مصنوعی چگونه کار می‌کند؟')">
+                            🧠 درباره هوش مصنوعی
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div id="messages"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <div class="input-wrapper">
+
+                <textarea
+                    id="messageInput"
+                    placeholder="پیامت را برای Claude بنویس..."
+                    rows="2"
+                ></textarea>
+
+                <div class="input-bottom">
+
+                    <span class="status" id="status">
+                        آماده گفتگو
+                    </span>
+
+                    <button
+                        class="send-btn"
+                        id="sendButton"
+                        onclick="sendMessage()"
+                        title="ارسال پیام"
+                    >
+                        ↑
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="footer-text">
+                پاسخ‌های هوش مصنوعی ممکن است اشتباه باشند.
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   CHEAPER INFERENCE API CONFIG
+========================================== */
+
+const API_BASE_URL =
+    "https://api.cheaperinference.com/v1";
+
+const API_KEY =
+    "ci_live_67c77f24a3b3ba7680fd90593da801b1d17210d48eb0a5be";
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const messagesElement =
+    document.getElementById("messages");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const statusElement =
+    document.getElementById("status");
+
+const chatContainer =
+    document.getElementById("chatContainer");
+
+const modelSelect =
+    document.getElementById("modelSelect");
+
+
+/* ==========================================
+   CHAT STATE
+========================================== */
+
+let conversation = [];
+
+let isLoading = false;
+
+let chatVersion = 0;
+
+let activeController = null;
+
+
+/* ==========================================
+   SYSTEM PROMPT
+========================================== */
+
+const SYSTEM_PROMPT = `
+You are Claude, an AI assistant.
+
+You are helpful, intelligent, accurate,
+friendly and professional.
+
+If the user speaks Persian,
+respond naturally in Persian.
+
+If the user speaks English,
+respond in English.
+
+Remember the previous conversation context.
+
+Provide clear and useful answers.
+
+When asked to write code, provide complete,
+working and properly formatted code.
+
+Do not claim to have performed actions
+that you have not actually performed.
+`;
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function setStatus(text, error = false) {
+
+    statusElement.textContent = text;
+
+    statusElement.classList.toggle(
+        "error",
+        error
+    );
+
+}
+
+
+/* ==========================================
+   SCROLL
+========================================== */
+
+function scrollToBottom() {
+
+    requestAnimationFrame(() => {
+
+        chatContainer.scrollTop =
+            chatContainer.scrollHeight;
+
+    });
+
+}
+
+
+/* ==========================================
+   MESSAGE UI
+========================================== */
+
+function appendMessage(role, content) {
+
+    const row = document.createElement("div");
+
+    row.className = "message-row " + role;
+
+    const message = document.createElement("div");
+
+    message.className = "message " + role;
+
+
+    if (role === "assistant") {
+
+        const header = document.createElement("div");
+
+        header.className = "assistant-header";
+
+
+        const avatar = document.createElement("div");
+
+        avatar.className = "assistant-avatar";
+
+        avatar.textContent = "✳";
+
+
+        const name = document.createElement("span");
+
+        name.className = "assistant-name";
+
+        name.textContent = "Claude";
+
+
+        header.appendChild(avatar);
+
+        header.appendChild(name);
+
+        message.appendChild(header);
+
+
+        const text = document.createElement("div");
+
+        text.className = "message-text";
+
+        text.textContent = content;
+
+        message.appendChild(text);
+
+
+        const copy = document.createElement("button");
+
+        copy.className = "copy-button";
+
+        copy.textContent = "⧉ کپی پاسخ";
+
+        copy.onclick = async () => {
+
+            try {
+
+                await navigator.clipboard.writeText(content);
+
+                copy.textContent = "✓ کپی شد";
+
+                setTimeout(() => {
+
+                    copy.textContent = "⧉ کپی پاسخ";
+
+                }, 1500);
+
+            } catch (error) {
+
+                copy.textContent = "کپی ناموفق";
+
+            }
+
+        };
+
+        message.appendChild(copy);
+
+    }
+
+    else {
+
+        message.textContent = content;
+
+    }
+
+
+    row.appendChild(message);
+
+    messagesElement.appendChild(row);
+
+    scrollToBottom();
+
+    return row;
+
+}
+
+
+/* ==========================================
+   TYPING INDICATOR
+========================================== */
+
+function showTyping() {
+
+    const row = document.createElement("div");
+
+    row.className = "message-row assistant";
+
+
+    const box = document.createElement("div");
+
+    box.className = "message assistant";
+
+
+    const header = document.createElement("div");
+
+    header.className = "assistant-header";
+
+
+    const avatar = document.createElement("div");
+
+    avatar.className = "assistant-avatar";
+
+    avatar.textContent = "✳";
+
+
+    const name = document.createElement("span");
+
+    name.className = "assistant-name";
+
+    name.textContent = "Claude";
+
+
+    header.appendChild(avatar);
+
+    header.appendChild(name);
+
+
+    const typing = document.createElement("div");
+
+    typing.className = "typing";
+
+
+    for (let i = 0; i < 3; i++) {
+
+        const dot = document.createElement("span");
+
+        dot.className = "dot";
+
+        typing.appendChild(dot);
+
+    }
+
+
+    box.appendChild(header);
+
+    box.appendChild(typing);
+
+    row.appendChild(box);
+
+    messagesElement.appendChild(row);
+
+    scrollToBottom();
+
+    return row;
+
+}
+
+
+/* ==========================================
+   FETCH MODELS
+========================================== */
+
+async function loadModels() {
+
+    try {
+
+        const response = await fetch(
+            API_BASE_URL + "/models",
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "Bearer " + API_KEY
+                }
+            }
+        );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const result = await response.json();
+
+        if (!Array.isArray(result.data)) {
+            return;
+        }
+
+
+        const claudeModels = result.data.filter(model => {
+
+            return typeof model.id === "string" &&
+                   model.id.toLowerCase().includes("claude");
+
+        });
+
+
+        if (claudeModels.length === 0) {
+            return;
+        }
+
+
+        const previousModel = modelSelect.value;
+
+        modelSelect.innerHTML = "";
+
+
+        claudeModels.forEach(model => {
+
+            const option = document.createElement("option");
+
+            option.value = model.id;
+
+            option.textContent = model.id;
+
+            modelSelect.appendChild(option);
+
+        });
+
+
+        const modelExists = claudeModels.some(
+            model => model.id === previousModel
+        );
+
+
+        if (modelExists) {
+
+            modelSelect.value = previousModel;
+
+        }
+
+        else {
+
+            modelSelect.value = claudeModels[0].id;
+
+        }
+
+
+        setStatus("مدل‌های Claude بارگذاری شدند");
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Could not load models:",
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   GET AI RESPONSE
+========================================== */
+
+async function getClaudeResponse(messages, signal) {
+
+    const selectedModel = modelSelect.value;
+
+
+    const response = await fetch(
+        API_BASE_URL + "/chat/completions",
+        {
+
+            method: "POST",
+
+            signal: signal,
+
+            headers: {
+
+                "Content-Type": "application/json",
+
+                "Authorization": "Bearer " + API_KEY
+
+            },
+
+            body: JSON.stringify({
+
+                model: selectedModel,
+
+                messages: [
+
+                    {
+                        role: "system",
+                        content: SYSTEM_PROMPT
+                    },
+
+                    ...messages
+
+                ],
+
+                max_tokens: 2048,
+
+                stream: false
+
+            })
+
+        }
+    );
+
+
+    let data;
+
+    try {
+
+        data = await response.json();
+
+    }
+
+    catch {
+
+        throw new Error(
+            "پاسخ سرور قابل خواندن نیست. کد: " +
+            response.status
+        );
+
+    }
+
+
+    if (!response.ok) {
+
+        let errorMessage =
+            data.error?.message ||
+            data.message ||
+            "خطای نامشخص از سمت سرور";
+
+
+        if (response.status === 401) {
+
+            errorMessage =
+                "کلید API معتبر نیست یا دسترسی ندارد.";
+
+        }
+
+        else if (response.status === 402) {
+
+            errorMessage =
+                "اعتبار کیف پول API کافی نیست.";
+
+        }
+
+        else if (response.status === 429) {
+
+            errorMessage =
+                "محدودیت تعداد درخواست‌ها فعال شده است.";
+
+        }
+
+        else if (response.status === 404) {
+
+            errorMessage =
+                "مدل انتخابی یا مسیر API پیدا نشد.";
+
+        }
+
+
+        throw new Error(errorMessage);
+
+    }
+
+
+    const content =
+        data.choices?.[0]?.message?.content;
+
+
+    if (typeof content === "string" && content.trim()) {
+
+        return content;
+
+    }
+
+
+    if (Array.isArray(content)) {
+
+        const text = content
+            .filter(item => item.type === "text")
+            .map(item => item.text || "")
+            .join("\n");
+
+        if (text.trim()) {
+            return text;
+        }
+
+    }
+
+
+    throw new Error(
+        "پاسخ معتبری از مدل دریافت نشد."
+    );
+
+}
+
+
+/* ==========================================
+   SEND MESSAGE
+========================================== */
+
+async function sendMessage() {
+
+    if (isLoading) {
+        return;
+    }
+
+
+    const text = messageInput.value.trim();
+
+    if (!text) {
+        return;
+    }
+
+
+    const currentVersion = chatVersion;
+
+
+    document.getElementById("welcome").style.display =
+        "none";
+
+
+    if (conversation.length === 0) {
+
+        document.getElementById("historyTitle").textContent =
+            text.length > 25 ?
+            text.substring(0, 25) + "..." :
+            text;
+
+    }
+
+
+    appendMessage("user", text);
+
+
+    conversation.push({
+
+        role: "user",
+
+        content: text
+
+    });
+
+
+    messageInput.value = "";
+
+    messageInput.style.height = "auto";
+
+
+    isLoading = true;
+
+    sendButton.disabled = true;
+
+    setStatus("Claude در حال پاسخ دادن است...");
+
+
+    const typingElement = showTyping();
+
+
+    const controller = new AbortController();
+
+    activeController = controller;
+
+
+    try {
+
+        const response = await getClaudeResponse(
+            conversation,
+            controller.signal
+        );
+
+
+        if (currentVersion !== chatVersion) {
+            return;
+        }
+
+
+        typingElement.remove();
+
+
+        conversation.push({
+
+            role: "assistant",
+
+            content: response
+
+        });
+
+
+        appendMessage("assistant", response);
+
+
+        setStatus("پاسخ دریافت شد");
+
+    }
+
+    catch (error) {
+
+        if (currentVersion !== chatVersion) {
+            return;
+        }
+
+
+        typingElement.remove();
+
+
+        // Remove the failed user request from API history
+
+        conversation.pop();
+
+
+        let errorText = error.message;
+
+
+        if (error instanceof TypeError) {
+
+            errorText =
+                "اتصال به API برقرار نشد. " +
+                "احتمال مشکل اینترنت یا محدودیت CORS مرورگر وجود دارد.";
+
+        }
+
+
+        appendMessage(
+            "assistant",
+            "خطا در دریافت پاسخ:\n\n" + errorText
+        );
+
+
+        setStatus("خطا در اتصال", true);
+
+        console.error("Claude API Error:", error);
+
+    }
+
+    finally {
+
+        if (currentVersion === chatVersion) {
+
+            isLoading = false;
+
+            activeController = null;
+
+            sendButton.disabled = false;
+
+            messageInput.focus();
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   SUGGESTION BUTTONS
+========================================== */
+
+function sendSuggestion(text) {
+
+    messageInput.value = text;
+
+    sendMessage();
+
+}
+
+
+/* ==========================================
+   NEW CHAT
+========================================== */
+
+function newChat() {
+
+    chatVersion++;
+
+
+    if (activeController) {
+
+        activeController.abort();
+
+        activeController = null;
+
+    }
+
+
+    conversation = [];
+
+    isLoading = false;
+
+
+    messagesElement.innerHTML = "";
+
+
+    document.getElementById("welcome").style.display =
+        "block";
+
+
+    document.getElementById("historyTitle").textContent =
+        "گفتگوی جدید";
+
+
+    messageInput.value = "";
+
+    sendButton.disabled = false;
+
+
+    setStatus("گفتگوی جدید آماده است");
+
+
+    messageInput.focus();
+
+}
+
+
+/* ==========================================
+   KEYBOARD
+========================================== */
+
+messageInput.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey &&
+        !event.isComposing
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
+
+
+/* ==========================================
+   AUTO RESIZE TEXTAREA
+========================================== */
+
+messageInput.addEventListener("input", () => {
+
+    messageInput.style.height = "auto";
+
+    messageInput.style.height =
+        Math.min(messageInput.scrollHeight, 180) + "px";
+
+});
+
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    setStatus("در حال بررسی مدل‌های Claude...");
+
+    loadModels().finally(() => {
+
+        if (
+            statusElement.textContent ===
+            "در حال بررسی مدل‌های Claude..."
+        ) {
+
+            setStatus("آماده گفتگو");
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
